@@ -1,0 +1,34 @@
+
+name: Fix Replit NPM Registry
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove Replit npm config
+        run: |
+          find extracted -name .npmrc -type f -delete
+
+      - name: Regenerate package lock
+        run: |
+          cd extracted/attendance-bot
+          rm -f package-lock.json
+          npm install --package-lock-only --ignore-scripts --registry=https://registry.npmjs.org/
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A extracted
+          git commit -m "Fix Replit npm registry URLs" || true
+          git push
