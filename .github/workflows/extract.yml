@@ -17,14 +17,19 @@ jobs:
 
       - name: Extract ZIP
         run: |
+          git rm --cached -r extracted/attendance-bot || true
+          rm -rf extracted
           mkdir -p extracted
           unzip -o "*.zip" -d extracted
+
+      - name: Remove nested Git repositories
+        run: |
+          find extracted -name .git -prune -exec rm -rf {} +
 
       - name: Commit extracted files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add extracted
-          git commit -m "Extract project ZIP" || true
+          git add -A extracted
+          git commit -m "Extract project files" || true
           git push
-          
