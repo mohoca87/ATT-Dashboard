@@ -1,0 +1,115 @@
+[
+  {
+    "id": "test-1",
+    "name": "Early Logout",
+    "input": {
+      "actualLogout": "19:36",
+      "scheduledLogout": "20:00",
+      "differenceMinutes": -24,
+      "approvedLogout": "Yes"
+    },
+    "expected": {
+      "classification": "Early OUT",
+      "display": "-24 minutes",
+      "approved": true
+    }
+  },
+  {
+    "id": "test-2",
+    "name": "Overtime",
+    "input": {
+      "actualLogout": "20:24",
+      "scheduledLogout": "20:00",
+      "differenceMinutes": 24,
+      "approvedLogout": "Yes"
+    },
+    "expected": {
+      "classification": "Overtime",
+      "display": "24 minutes",
+      "approved": true
+    }
+  },
+  {
+    "id": "test-3",
+    "name": "Unapproved logout difference",
+    "input": {
+      "actualLogout": "19:50",
+      "scheduledLogout": "20:00",
+      "differenceMinutes": -10,
+      "approvedLogout": "No"
+    },
+    "expected": {
+      "approvedException": false,
+      "pendingReview": true
+    }
+  },
+  {
+    "id": "test-4",
+    "name": "Approved late login",
+    "input": {
+      "actualLogin": "09:15",
+      "scheduledLogin": "09:00",
+      "differenceMinutes": -15,
+      "approvedLogin": "Yes"
+    },
+    "expected": {
+      "classification": "Late IN",
+      "preserveDifference": "-15 minutes",
+      "approved": true
+    }
+  },
+  {
+    "id": "test-5",
+    "name": "Wrong approval column",
+    "input": {
+      "actualLogout": "19:55",
+      "scheduledLogout": "20:00",
+      "differenceMinutes": -5,
+      "approvedLogin": "Yes",
+      "approvedLogout": ""
+    },
+    "expected": {
+      "approvedLogoutException": false
+    }
+  },
+  {
+    "id": "test-6",
+    "name": "Comments must be included",
+    "input": {
+      "agent": "Barbu, Oana Diana",
+      "comment": "Medical appointment"
+    },
+    "expected": {
+      "commentIncluded": true
+    }
+  },
+  {
+    "id": "test-7",
+    "name": "LOB filter",
+    "expected": {
+      "onlySelectedLobShown": true
+    }
+  },
+  {
+    "id": "test-8",
+    "name": "Missing worksheet",
+    "expected": {
+      "warningShown": true,
+      "otherAuthorizedWorksheetsAnalyzed": true
+    }
+  },
+  {
+    "id": "test-9",
+    "name": "Other worksheets ignored",
+    "expected": {
+      "unauthorizedSheetsIgnored": true
+    }
+  },
+  {
+    "id": "test-10",
+    "name": "Agent search",
+    "expected": {
+      "agentDataReturned": true
+    }
+  }
+]

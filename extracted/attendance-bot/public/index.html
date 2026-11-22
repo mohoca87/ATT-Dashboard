@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Feedback</title>
+    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-brand">
+        <div class="logo-mark">AF</div>
+        <div>
+          <h1>Attendance Feedback</h1>
+          <p class="subtitle">
+            Smart insights and actionable recommendations for your daily
+            attendance data.
+          </p>
+        </div>
+      </div>
+      <button id="theme-toggle" class="btn icon-btn">
+        <span class="icon">🌙</span> Dark Mode
+      </button>
+    </header>
+
+    <main>
+      <!-- Upload Panel -->
+      <section class="panel upload-panel">
+        <div class="panel-header">
+          <h2>Upload Workbook</h2>
+          <span class="badge-outline">.xlsx / .xlsm</span>
+        </div>
+        <p class="muted">
+          Upload your daily attendance file. The bot reads every worksheet
+          containing agent data.
+        </p>
+
+        <div class="upload-row">
+          <label class="file-drop-zone">
+            <input type="file" id="file-input" accept=".xlsx,.xlsm" hidden />
+            <div class="file-drop-content">
+              <span class="upload-icon">📁</span>
+              <span id="file-name-display"
+                >Click to select or drag your Excel file here</span
+              >
+            </div>
+          </label>
+          <button id="upload-btn" class="btn primary">
+            <span class="icon">⚡</span> Upload & Analyze
+          </button>
+        </div>
+
+        <div id="warnings-panel" class="warnings-panel hidden">
+          <button
+            id="warnings-toggle"
+            class="warnings-toggle"
+            type="button"
+            aria-expanded="false"
+          >
+            <span class="warnings-toggle-left">
+              <span class="warnings-icon">ⓘ</span>
+              <span id="warnings-toggle-label">Show upload details</span>
+              <span id="warnings-count" class="warnings-count">0</span>
+            </span>
+            <span class="warnings-chevron">▾</span>
+          </button>
+          <div class="warnings-body">
+            <div class="warnings-inner">
+              <div id="file-status" class="status"></div>
+              <div id="warnings" class="warnings"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOB & Actions Panel -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Line of Business (LOB)</h2>
+          <button id="copy-all" class="btn secondary">
+            <span class="icon">📋</span> Copy Visible Report
+          </button>
+        </div>
+        <div id="lob-list" class="lob-list"></div>
+        <div id="copy-status" class="copy-status-msg"></div>
+      </section>
+
+      <!-- Dashboard Panel -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Dashboard Overview</h2>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-card gray">
+            <div class="summary-icon">👥</div>
+            <div class="summary-info">
+              <div class="summary-label">Total Agents</div>
+              <div class="summary-value" id="totalAgents">0</div>
+            </div>
+          </div>
+          <div class="summary-card blue">
+            <div class="summary-icon">⚠️</div>
+            <div class="summary-info">
+              <div class="summary-label">Affected Agents</div>
+              <div class="summary-value" id="affectedAgents">0</div>
+            </div>
+          </div>
+          <div class="summary-card red">
+            <div class="summary-icon">⏰</div>
+            <div class="summary-info">
+              <div class="summary-label">Late IN</div>
+              <div class="summary-value" id="lateInCount">0</div>
+            </div>
+          </div>
+          <div class="summary-card red">
+            <div class="summary-icon">🏃</div>
+            <div class="summary-info">
+              <div class="summary-label">Early OUT</div>
+              <div class="summary-value" id="earlyOutCount">0</div>
+            </div>
+          </div>
+          <div class="summary-card orange">
+            <div class="summary-icon">⏳</div>
+            <div class="summary-info">
+              <div class="summary-label">Overtime</div>
+              <div class="summary-value" id="overtimeCount">0</div>
+            </div>
+          </div>
+          <div class="summary-card purple">
+            <div class="summary-icon">📊</div>
+            <div class="summary-info">
+              <div class="summary-label">Staffed Variance</div>
+              <div class="summary-value" id="staffedCount">0</div>
+            </div>
+          </div>
+          <div class="summary-card orange">
+            <div class="summary-icon">🔍</div>
+            <div class="summary-info">
+              <div class="summary-label">Pending Review</div>
+              <div class="summary-value" id="pendingCount">0</div>
+            </div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-icon">✅</div>
+            <div class="summary-info">
+              <div class="summary-label">Approved</div>
+              <div class="summary-value" id="approvedCount">0</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-title">LOB Breakdown</h3>
+        <div class="table-wrap">
+          <table id="lob-summary-table">
+            <thead>
+              <tr>
+                <th>LOB</th>
+                <th>Agents</th>
+                <th>Exceptions</th>
+                <th>Approved</th>
+                <th>Pending</th>
+                <th>Early OUT</th>
+                <th>Overtime</th>
+                <th>Late IN</th>
+                <th>Staffed</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Findings & Search Panel -->
+      <section class="panel">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="approved">
+            Approved Exceptions
+          </button>
+          <button class="tab-btn" data-tab="pending">Pending Review</button>
+          <button class="tab-btn" data-tab="all">All Findings</button>
+          <button class="tab-btn" data-tab="search">Agent Search</button>
+          <button class="tab-btn" data-tab="chat">AI Chat</button>
+        </div>
+
+        <div id="panel-analysis" class="tab-panel">
+          <div class="filter-bar">
+            <div class="filter-title">Filter by issue type</div>
+            <div id="category-filters" class="filter-chips"></div>
+            <div class="filter-actions">
+              <button id="filter-clear" class="btn ghost small" type="button">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+          <div id="results" class="cards"></div>
+        </div>
+
+        <div id="panel-search" class="tab-panel hidden">
+          <div class="search-row">
+            <input
+              id="agent-query"
+              type="text"
+              placeholder="e.g., What are the attendance issues for John Doe?"
+            />
+            <button id="agent-search-btn" class="btn primary">Search</button>
+          </div>
+          <div id="search-results"></div>
+        </div>
+
+        <div id="panel-chat" class="tab-panel hidden">
+          <div id="chat-messages" class="chat-messages"></div>
+          <div class="chat-input-row">
+            <input
+              id="chat-input"
+              type="text"
+              placeholder="Ask a question about the attendance data..."
+            />
+            <button id="chat-send" class="btn primary">Send</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js?v=4"></script>
+  </body>
+</html>
